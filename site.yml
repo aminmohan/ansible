@@ -1,0 +1,80 @@
+---
+- hosts: all
+  become: true
+  pre_tasks:
+    - name: To update UBUNTU cache
+      tags: always
+      apt:
+        update_cache: true
+      when: ansible_distribution == "Ubuntu"
+    - name: To update CENTOS cache
+      tags: always
+      dnf:
+        update_cache: true
+      when: ansible_distribution == "CentOS"
+    - name: create user mohan
+      tags: always
+      user:
+        name: mohan
+        groups: root
+      when: ansible_distribution == "CentOS","Ubuntu"
+
+
+- hosts: webserver
+  become: true
+  tasks:
+    - name: INSTALL HTTPD ON CENTOS
+      tags: httpd,centos
+      dnf:
+        name: httpd
+        state: present
+      when: ansible_distribution == "CentOS"
+
+#### ensure service apache running on centos by default it is disabled
+    - name: service httpd to be running
+      tags: httpd,centos
+      service:
+        name: httpd
+        state: started
+        enabled: true
+      when: ansible_distribution == "CentOS"
+#### copy deafult html to centos web location
+    - name: Copy default site html to apache location
+      tags: httpd,centos
+      copy:
+        src: default_site.html
+        dest: /var/www/html/index.html
+        owner: apache
+        group: apache
+        mode: 0644
+      when: ansible_distribution == "CentOS"
+
+
+    - name: change email address of httpd in centos
+      tags: httpd,centos
+      lineinfile:
+        path: /etc/httpd/conf/httpd.conf
+        regexp: '^ServerAdmin'
+        line: ServerAdmin amin@gmail.com
+      when: ansible_distribution == "CentOS"
+      register: httpd
+    - name: service httpd restarted if line changed
+      tags: httpd,centos
+      service:
+        name: httpd
+        state: restarted
+      when: httpd.changed
+
+- hosts: debian
+  become: true
+  tasks:
+    - name: INSTALL apache ON UBUNTU
+      tags: apache,ubuntu
+      apt:
+        name: apache2
+        state: present
+      when: ansible_distribution == "Ubuntu"
+
+
+
+
