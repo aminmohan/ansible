@@ -1,0 +1,14 @@
+#- name: INSTALL HTTPD ON CENTOS
+#  tags: httpd,centos
+#  dnf:
+#    name: httpd
+#    state: present
+#  when: ansible_distribution == "CentOS"
+
+- name: service httpd to be running
+  tags: httpd,centos
+  service:
+    name: httpd
+    state: started
+    enabled: true
+  when: ansible_distribution == "CentOS"

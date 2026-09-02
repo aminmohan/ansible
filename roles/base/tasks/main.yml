@@ -1,0 +1,32 @@
+- name: To update UBUNTU cache
+  tags: always
+  apt:
+    update_cache: true
+  when: ansible_distribution == "Ubuntu"
+    #- name: To update CENTOS cache
+    #tags: always
+    #dnf:
+    #update_cache: true
+    #when: ansible_distribution == "CentOS"
+- name: create user mohan
+  tags: always
+  user:
+    name: mohan
+    groups: root
+  when: ansible_distribution == "CentOS","Ubuntu"
+- name: Install key file for user mohan
+  tags: always
+  authorized_key:
+    user: mohan
+    key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCUl4iZe6BF2/uKFSdFqbu0scN4zaWsylI5cixpzKjKtHqOIotVKM5bn99d0zlPAQcQybXYfNaS+MEciFu4mSDsXC5INKxwF2F1VsKqgc9bvf4Th2LwANUMDZQVO0KcSBGMyXi/3IWTiD/tjFNdgZ+xjz9xn1ndV7VJq2mHqrkHRzBY0SzxpXfUH5Fg7zuZaTWX7kuXXzZIbypKJEJgnkr9CitGdwNtcEi0I7fMzTbGIPthYQgHEwmUF3JmLIMM1VEDS4qvmAbFXaTFAXFGsf91prj0oAJn/z3qJ20Ca1jEkz8PNlNhfoKayXRu2cYkbn5ESdqeaSGvxUteTSm+zDvJ ansible@ubuntu-c"
+
+
+- name: sudo permission to mohan on centos and ubuntu systems
+  tags: always
+  copy:
+    src: sudoer_mohan
+    dest: /etc/sudoers.d/mohan
+    owner: root
+    group: root
+    mode: 0440
+  when: ansible_distribution == "CentOS","Ubuntu"

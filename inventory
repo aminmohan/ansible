@@ -1,8 +1,8 @@
-[webserver]
+[centos]
 centos1
 centos2
 centos3
-[debian]
+[ubuntu]
 ubuntu1
 ubuntu2
 ubuntu3

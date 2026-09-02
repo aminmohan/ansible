@@ -1,0 +1,6 @@
+- name: INSTALL apache ON UBUNTU
+  tags: apache,ubuntu
+  apt:
+    name: apache2
+    state: present
+  when: ansible_distribution == "Ubuntu"
